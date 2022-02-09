@@ -36,17 +36,35 @@ public class AlgGrafos{
             Vertice v = new Vertice(Integer.parseInt(lista.get(0)));
             lista.remove(0);
 
+            // Caso o vertice já exista
+            if(grafo.contemVertice(v)){
+                // Trabalhamos com a instância que já existe
+                v = grafo.getVertice(v);
+            }else{
+                grafo.addVertice(v);
+            }
+            
+
             for (String str : lista){
                 Vertice w = new Vertice(Integer.parseInt(str));
-                v.addVizinho(w);
+                // Caso o vertice já exista
+                if(grafo.contemVertice(w)){
+                    // Trabalhamos com a instância que já existe
+                    w = grafo.getVertice(w);
+                }else{
+                    grafo.addVertice(w);  
+                }
+                // O grafo é não direcionado
+                v.addVizinho(w);  
+                w.addVizinho(v); 
             }            
-
-            grafo.addVertice(v);
 
         }
 
         //System.out.println(grafo);
         System.out.println(lexBFS(grafo));
+
+        System.out.println(grafo);
        
     }
     

@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.Set;
+import java.util.ArrayList;
 
 public class Grafo {
     private HashSet<Vertice> vertices;
@@ -13,6 +14,12 @@ public class Grafo {
     }
 
 
+    public Vertice getVertice(Vertice vertice){
+        ArrayList<Vertice> vertices = new ArrayList<Vertice>(this.vertices);
+        int index = vertices.indexOf(vertice);
+        return vertices.get(index);
+    }
+
     public HashSet<Vertice> getVertices(){
         return this.vertices;
     }
@@ -20,6 +27,8 @@ public class Grafo {
     public int getNumeroVertices(){
         return this.vertices.size();
     }
+
+
 
     @Override
     public String toString(){
@@ -39,12 +48,15 @@ public class Grafo {
 
     
     // Checa se um vértice está no grafo
-    /*public boolean contemVertice(int id){
-        Vertice vertice_aux = new Vertice(id);
-        if(this.vertices.contains(vertice_aux)) return true;
+    public boolean contemVertice(Vertice vertice){
+        if(this.vertices.contains(vertice)) return true;
         else return false;
 
-    }*/
+    }
+
+    public void removeVertice(Vertice vertice){
+        
+    }
 
 
 }

@@ -10,8 +10,6 @@ public class Vertice {
     public Vertice(int id){
         this.id = id;
         this.vizinhos = new HashSet<Vertice>();
-        this.marcado = false;
-        this.r = 0;
     }
 
     public int getId(){

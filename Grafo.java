@@ -2,7 +2,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Grafo {
-    private Set<Vertice> vertices;
+    private HashSet<Vertice> vertices;
 
     public Grafo(){
         this.vertices = new HashSet<Vertice>();
@@ -13,12 +13,28 @@ public class Grafo {
     }
 
 
-    public Set<Vertice> getVertices(){
+    public HashSet<Vertice> getVertices(){
         return this.vertices;
     }
 
     public int getNumeroVertices(){
         return this.vertices.size();
+    }
+
+    @Override
+    public String toString(){
+        String out = "";
+        for(Vertice v : this.vertices){
+            out += v.toString() + " : " ;
+            HashSet<Vertice> vizinhos = v.getVizinhos();
+            for(Vertice w : vizinhos){
+                out += w.toString() + " ";
+            }
+
+            out += "\n";
+        }
+
+        return out;
     }
 
     

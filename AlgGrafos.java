@@ -21,9 +21,9 @@ public class AlgGrafos{
         }
        
         Scanner sc = new Scanner(fr);
-
         Grafo grafo = new Grafo();
 
+        // Enquanto não tiver chegado ao final da linha
         while(sc.hasNextLine()){
             // Linha lida até \n
             String linha = sc.nextLine();
@@ -45,12 +45,13 @@ public class AlgGrafos{
 
         }
 
-        System.out.println(grafo);
+        //System.out.println(grafo);
+        System.out.println(lexBFS(grafo));
        
     }
     
     // Grafo deve ser conexo
-    ArrayList<Vertice> lexBFS(Grafo grafo){
+    static ArrayList<Vertice> lexBFS(Grafo grafo){
         int n = grafo.getNumeroVertices();
         Set<Vertice> vertices = grafo.getVertices();
         Vertice v;
@@ -59,16 +60,26 @@ public class AlgGrafos{
         // Vizinhos w de um vertice v
         HashSet<Vertice> vizinhos;
 
+        HashMap<Vertice,Integer> R = iniciaR(grafo);
+        HashMap<Vertice,Boolean> marcacao = iniciaMarcacao(grafo);
+
+        // Inicializa a variável
+        boolean isMarcado;
+        int atualR;
+
         for(int j = n; j > 0; j--){
             
-            v = rLexMax(vertices);
-            v.marcaVertice();
+            v = rLexMax(vertices, R, marcacao);
+            // Marca v
+            marcacao.replace(v, true);
             lista.add(v);
             
             vizinhos = v.getVizinhos();
             for(Vertice w : vizinhos){
-                if(w.isMarcado() == false){
-                    w.setR(j);
+                isMarcado = marcacao.get(w);
+                if(isMarcado == false){
+                    atualR = R.get(w);
+                    R.replace(w, atualR*10 + j);
                 }
             }
         }
@@ -77,21 +88,45 @@ public class AlgGrafos{
 
     }
 
+    static HashMap<Vertice,Integer> iniciaR(Grafo grafo){
+        HashSet<Vertice> vertices = grafo.getVertices();
+        HashMap<Vertice,Integer> R = new HashMap<Vertice,Integer>();
+        for(Vertice v: vertices){
+            R.put(v,0);
+        }   
+        return R;
+    }
 
-    Vertice rLexMax(Set<Vertice> vertices){
+    // Inicia a marcação
+    static HashMap<Vertice,Boolean> iniciaMarcacao(Grafo grafo){
+        HashSet<Vertice> vertices = grafo.getVertices();
+        HashMap<Vertice,Boolean> marcacao = new HashMap<Vertice,Boolean>();
+        for(Vertice v: vertices){
+            marcacao.put(v,false);
+        }   
+        return marcacao;
+    }
+
+
+    static Vertice rLexMax(Set<Vertice> vertices, HashMap<Vertice,Integer> R ,HashMap<Vertice,Boolean> marcacao){
         // Proximo vertice
         // Suponhamos que menorR é 0 no começo
         int maiorR = 0;     
         // R atual visualizado
-        int atualR; 
+        int atualR = 0; 
 
         // Vertice que será retornado
         // Iniciamos que um valor arbitrário
         Vertice vertice = new Vertice(0);
 
+        // Inicia variável
+        boolean isMarcado = false;
+
         for(Vertice v : vertices){
-            atualR = v.getR();
-            if(atualR >= maiorR && v.isMarcado() == false){
+            // Pega o valor no conjunto R de um certo vértice v
+            atualR = R.get(v);
+            isMarcado = marcacao.get(v);
+            if(atualR >= maiorR && isMarcado == false){
                 maiorR = atualR;
                 vertice = v;
             }

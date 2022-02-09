@@ -26,7 +26,7 @@ public class Vertice {
         return this.vizinhos;
     }
 
-    public void marcaVertice(){
+    /*public void marcaVertice(){
         this.marcado = true;
     }
 
@@ -41,7 +41,7 @@ public class Vertice {
     public void setR(int valor){
         // Ex: 10 e 3 -> 103: 10*10 + 3 = 103
         this.r = this.r*10 + valor;
-    }
+    }*/
 
     @Override
     public String toString(){
@@ -66,9 +66,9 @@ public class Vertice {
         Vertice vertice = (Vertice) obj; 
 
         //aqui você compara a seu gosto, o ideal é comparar atributo por atributo
-        return this.id == vertice.getId() &&
+        return this.id == vertice.getId() /*&&
                 this.r == vertice.getR() &&
-                this.marcado == vertice.isMarcado();
+                this.marcado == vertice.isMarcado()*/;
     }  
 
 }

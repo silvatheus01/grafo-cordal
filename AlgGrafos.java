@@ -1,28 +1,36 @@
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Queue;
 
 public class AlgGrafos{
 
     public static void main(String[] args) throws FileNotFoundException, GrafoInvalidoException{
 
-        String path = "./myfiles/grafo4.txt";
+        String path = "./myfiles/grafo.txt";
         Grafo grafo = new Grafo(path);
 
-        System.out.println(lexBFS(grafo));
-        System.out.println(grafo);
-        System.out.println(isCordal(grafo));
-        System.out.println(grafo);
+        if(isCordal(grafo)){
+            System.out.println("O grafo é cordal.");
+        }else{
+            System.out.println("O grafo não é cordal.");
+        }
+        
        
     }
     
-    // Computa a Busca em Largura Lexicográfica
-    static ArrayList<Vertice> lexBFS(Grafo grafo){
+    // Computa a Busca em Largura Lexicográfica (LexBFS)
+    static ArrayList<Vertice> lexBFS(Grafo grafo) throws GrafoInvalidoException{
+
+        // Testa se o grafo é conexo, pois estamos supondo que a entrada deve ser um grafo conexo.
+        if(isConexo(grafo) == false){
+            throw new GrafoInvalidoException("O grafo não é conexo.");
+        }
+
         int n = grafo.getNumeroVertices();
         Set<Vertice> vertices = grafo.getVertices();
         ArrayList<Vertice> lista = new ArrayList<Vertice>();        
@@ -155,10 +163,55 @@ public class AlgGrafos{
     }
 
     // Checa se o grafo é cordal
-    static boolean isCordal(Grafo grafo){
+    static boolean isCordal(Grafo grafo) throws GrafoInvalidoException{
         ArrayList<Vertice> lista = lexBFS(grafo);
         return checaVerticesSimpliciais(grafo, lista);
     }
 
-    
+    // Testa se o grafo é conexo através de um algoritmo de BFS (Busca em Largura) modificado. 
+    static boolean isConexo(Grafo grafo){
+        // Responsável por guardar o número de vértices alcançados
+        int contador = 0;
+        // Guarda as cores de cada vértice.
+        HashMap<Vertice,Cor> verticesCores = new  HashMap<Vertice,Cor>();
+        HashSet<Vertice> vertices = grafo.getVertices();
+
+        // Pinta todos os vértices de branco
+        for(Vertice v: vertices){
+            verticesCores.put(v,Cor.BRANCO);
+        }
+
+         // Pega um vertice arbitrário no conjunto de todos os vértices do grafo.
+        ArrayList<Vertice> aux = new ArrayList<Vertice>(vertices);
+        Vertice s = aux.get(0);
+        
+        verticesCores.replace(s, Cor.CINZENTO);
+
+        Queue<Vertice> fila = new ArrayDeque<Vertice>();
+        fila.add(s);
+
+        // Varuáveis auxiliares
+        Vertice u;
+        HashSet<Vertice> vizinhos;
+
+
+        while(fila.isEmpty() == false){
+            u = fila.remove();
+            vizinhos = u.getVizinhos();
+            for(Vertice w : vizinhos){
+                if(verticesCores.get(w) == Cor.BRANCO){
+                    verticesCores.replace(w, Cor.CINZENTO);
+                    fila.add(w);
+                }
+            }
+            verticesCores.replace(u, Cor.PRETO);
+            // Incrementa o número de vértices alcançados
+            contador++;
+        }
+        
+        /* Se o número de vértices alcançados for o mesmo número de vértices do grafo,
+        o grafo é conexo, senão, não é.
+        */
+        return grafo.getNumeroVertices() == contador;
+    }
 }

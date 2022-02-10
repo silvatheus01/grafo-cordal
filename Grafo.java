@@ -29,8 +29,6 @@ public class Grafo {
         
         Scanner sc = new Scanner(fr);
 
-        //HashMap<Vertice,Boolean> verticesChecados = new HashMap<Vertice,Boolean>(); 
-
         // Continua enquanto não chegar na última linha
         while(sc.hasNextLine()){
             // Linha lida até \n
@@ -78,7 +76,7 @@ public class Grafo {
                 /*Se v "aponta" para w, w também precisa "apontar" para v
                 para o grafo ser não direcionado.*/
                 if(w.isVizinho(v) == false){
-                    throw new GrafoInvalidoException();
+                    throw new GrafoInvalidoException("O grafo é direcionado.");
                 }   
             }
         }

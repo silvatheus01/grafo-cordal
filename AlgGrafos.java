@@ -9,9 +9,9 @@ import java.util.HashSet;
 
 public class AlgGrafos{
 
-    public static void main(String[] args) throws FileNotFoundException{
+    public static void main(String[] args) throws FileNotFoundException, GrafoInvalidoException{
 
-        String path = "./myfiles/grafo.txt";
+        String path = "./myfiles/grafo4.txt";
         Grafo grafo = new Grafo(path);
 
         System.out.println(lexBFS(grafo));
@@ -159,5 +159,6 @@ public class AlgGrafos{
         ArrayList<Vertice> lista = lexBFS(grafo);
         return checaVerticesSimpliciais(grafo, lista);
     }
+
     
 }

@@ -1,6 +1,8 @@
 import java.util.HashSet;
+import java.util.HashMap;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -10,7 +12,7 @@ public class Grafo {
     private HashSet<Vertice> vertices;
     private String path;
 
-    public Grafo(String path) throws FileNotFoundException{
+    public Grafo(String path) throws FileNotFoundException, GrafoInvalidoException{
         this.vertices = new HashSet<Vertice>();
         // Caminho do arquivo que possui os vértices e as arestas
         this.path = path;
@@ -22,10 +24,12 @@ public class Grafo {
             fr = new FileReader(this.path);
         }catch(FileNotFoundException e){
             // Caso o arquivo não exista
-            throw new FileNotFoundException("Arquivo de entrada não existe.");
+            throw new FileNotFoundException("O arquivo de entrada para o grafo não existe.");
         }
         
         Scanner sc = new Scanner(fr);
+
+        //HashMap<Vertice,Boolean> verticesChecados = new HashMap<Vertice,Boolean>(); 
 
         // Continua enquanto não chegar na última linha
         while(sc.hasNextLine()){
@@ -60,11 +64,25 @@ public class Grafo {
                 }else{
                     this.addVertice(w);  
                 }
-                // O grafo é não direcionado, então v -> w e v <- w, ou seja w-v
-                v.addVizinho(w);  
-                w.addVizinho(v); 
+
+                v.addVizinho(w);                
             }            
         }
+
+        HashSet<Vertice> vertices = this.vertices;
+
+        // Testa se o grafo é direcionado
+        for(Vertice v : vertices){
+            HashSet<Vertice> vizinhos = v.getVizinhos();
+            for (Vertice w : vizinhos) {
+                /*Se v "aponta" para w, w também precisa "apontar" para v
+                para o grafo ser não direcionado.*/
+                if(w.isVizinho(v) == false){
+                    throw new GrafoInvalidoException();
+                }   
+            }
+        }
+
     }
 
 

@@ -6,63 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Scanner;
 
 public class AlgGrafos{
 
     public static void main(String[] args) throws FileNotFoundException{
 
-        FileReader fr = null;
+        String path = "./myfiles/grafo.txt";
+        Grafo grafo = new Grafo(path);
 
-        try{  
-            // O . serve pra dizer que está na mesma pasta
-            fr = new FileReader("./myfiles/grafo.txt");
-        }catch(FileNotFoundException e){
-            throw new FileNotFoundException("Arquivo de entrada não existe.");
-        }
-       
-        Scanner sc = new Scanner(fr);
-        Grafo grafo = new Grafo();
-
-        // Enquanto não tiver chegado ao final da linha
-        while(sc.hasNextLine()){
-            // Linha lida até \n
-            String linha = sc.nextLine();
-            //Lista de números
-            ArrayList<String> lista = new ArrayList<String>(Arrays.asList(linha.split(" ")));
-            // Remove caractere "="
-            lista.remove("=");
-
-            // Vertice que terá seus vizinhos neste momento
-            Vertice v = new Vertice(Integer.parseInt(lista.get(0)));
-            lista.remove(0);
-
-            // Caso o vertice já exista
-            if(grafo.contemVertice(v)){
-                // Trabalhamos com a instância que já existe
-                v = grafo.getVertice(v);
-            }else{
-                grafo.addVertice(v);
-            }
-            
-
-            for (String str : lista){
-                Vertice w = new Vertice(Integer.parseInt(str));
-                // Caso o vertice já exista
-                if(grafo.contemVertice(w)){
-                    // Trabalhamos com a instância que já existe
-                    w = grafo.getVertice(w);
-                }else{
-                    grafo.addVertice(w);  
-                }
-                // O grafo é não direcionado
-                v.addVizinho(w);  
-                w.addVizinho(v); 
-            }            
-
-        }
-
-        //System.out.println(grafo);
         System.out.println(lexBFS(grafo));
         System.out.println(grafo);
         System.out.println(isCordal(grafo));
@@ -70,35 +21,41 @@ public class AlgGrafos{
        
     }
     
-    // Grafo deve ser conexo
+    // Computa a Busca em Largura Lexicográfica
     static ArrayList<Vertice> lexBFS(Grafo grafo){
         int n = grafo.getNumeroVertices();
         Set<Vertice> vertices = grafo.getVertices();
-        Vertice v;
         ArrayList<Vertice> lista = new ArrayList<Vertice>();        
 
-        // Vizinhos w de um vertice v
-        HashSet<Vertice> vizinhos;
-
+        // Guarda os valores lexicográficos R[v] de cada vértice v
         HashMap<Vertice,Integer> R = iniciaR(grafo);
+        // Controla a marcação dos vertices
         HashMap<Vertice,Boolean> marcacao = iniciaMarcacao(grafo);
 
-        // Inicializa a variável
+        // Variáveis auxiliares
         boolean isMarcado;
         int atualR;
+        HashSet<Vertice> vizinhos;
+        Vertice v;
 
         for(int j = n; j > 0; j--){
             
+            // Computa o maior R[v] onde v não está marcado
             v = rLexMax(vertices, R, marcacao);
             // Marca v
             marcacao.replace(v, true);
+            // Coloca na lista
             lista.add(v);
             
             vizinhos = v.getVizinhos();
             for(Vertice w : vizinhos){
                 isMarcado = marcacao.get(w);
+                // Se o vizinho não está marcado, atualiza seu valor lexicográfico
                 if(isMarcado == false){
                     atualR = R.get(w);
+                    /*Regra para atualização do valor: 
+                    R[w] = R[w]*10 + j
+                    Ex: 10 e 3 -> 103: 10*10 + 3 = 103*/
                     R.replace(w, atualR*10 + j);
                 }
             }
@@ -108,6 +65,7 @@ public class AlgGrafos{
 
     }
 
+    // Inicia o conjunto R, ou seja, todos os vértices possui valor lexicográfico igual a 0
     static HashMap<Vertice,Integer> iniciaR(Grafo grafo){
         HashSet<Vertice> vertices = grafo.getVertices();
         HashMap<Vertice,Integer> R = new HashMap<Vertice,Integer>();
@@ -117,7 +75,7 @@ public class AlgGrafos{
         return R;
     }
 
-    // Inicia a marcação
+    // Inicia a marcação, ou seja, todos os vértices não estão marcados
     static HashMap<Vertice,Boolean> iniciaMarcacao(Grafo grafo){
         HashSet<Vertice> vertices = grafo.getVertices();
         HashMap<Vertice,Boolean> marcacao = new HashMap<Vertice,Boolean>();
@@ -127,25 +85,26 @@ public class AlgGrafos{
         return marcacao;
     }
 
-
+    // Método auxliar para o algoritmo de lexBFS
     static Vertice rLexMax(Set<Vertice> vertices, HashMap<Vertice,Integer> R ,HashMap<Vertice,Boolean> marcacao){
-        // Proximo vertice
-        // Suponhamos que menorR é 0 no começo
+        // Suponhamos que maior valor no conjunto R é 0 no começo
         int maiorR = 0;     
         // R atual visualizado
         int atualR = 0; 
 
         // Vertice que será retornado
-        // Iniciamos que um valor arbitrário
+        // Iniciamos com um id arbitrário
         Vertice vertice = new Vertice(0);
 
         // Inicia variável
         boolean isMarcado = false;
 
         for(Vertice v : vertices){
-            // Pega o valor no conjunto R de um certo vértice v
+            // Pega o valor R[v] de um certo vértice v
             atualR = R.get(v);
             isMarcado = marcacao.get(v);
+            /* Se R[v] possui o maior valor lexicografico
+            e não está marcado, então é o candidato para ser colocado na lista */
             if(atualR >= maiorR && isMarcado == false){
                 maiorR = atualR;
                 vertice = v;
@@ -155,53 +114,50 @@ public class AlgGrafos{
        return vertice;
     }
 
+
     static boolean induzClique(Vertice vertice){
         HashSet<Vertice> vizinhos = vertice.getVizinhos();
-        HashSet<Vertice> vv;
+        /*Para cada vizinho do vertice que será retirado
+        checamos se eles são vizinhos entre si, ou seja, existe um clique */
         for(Vertice v : vizinhos){
             for(Vertice w : vizinhos){
+                // Um vértice não pode ser vizinho de si mesmo
                 if(v.equals(w) == false){
+                    // Se não é vizinho, já retornamos como falso
                     if(v.isVizinho(w) == false){
                         return false;
                     }
                 }
-            }
-
-            /*// Vizinhos dos vizinhos
-            vv = v.getVizinhos();
-            for(Vertice w : vv){
-                if(w.isVizinho(vertice) == false){
-                    return false;
-                }
-            }*/
-            
+            }            
         }
 
         return true;
     }
 
-    static boolean testaVerticesSimpliciais(Grafo grafo, ArrayList<Vertice> lista){
-        // Tomamos a ordem reversa da lista
+    // Checa se todos os vértices no EEP são simpliciais 
+    static boolean checaVerticesSimpliciais(Grafo grafo, ArrayList<Vertice> lista){
+        // Tomamos a ordem reversa da lista, ou seja, o possível EEP
         Collections.reverse(lista);
 
         for(Vertice v : lista){
-            
             if (induzClique(v) == false){
+                // Vertice removida para printar subgrafo
                 grafo.removeVertice(v);
                 return false;
             } 
 
+            // Removemos o vértice posteriormente para checagem ocorra corretamente
             grafo.removeVertice(v);
         }   
 
         return true;
 
-
     }
 
+    // Checa se o grafo é cordal
     static boolean isCordal(Grafo grafo){
         ArrayList<Vertice> lista = lexBFS(grafo);
-        return testaVerticesSimpliciais(grafo, lista);
+        return checaVerticesSimpliciais(grafo, lista);
     }
     
 }

@@ -2,6 +2,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
@@ -63,7 +64,8 @@ public class AlgGrafos{
 
         //System.out.println(grafo);
         System.out.println(lexBFS(grafo));
-
+        System.out.println(grafo);
+        System.out.println(isCordal(grafo));
         System.out.println(grafo);
        
     }
@@ -151,6 +153,55 @@ public class AlgGrafos{
         }
 
        return vertice;
+    }
+
+    static boolean induzClique(Vertice vertice){
+        HashSet<Vertice> vizinhos = vertice.getVizinhos();
+        HashSet<Vertice> vv;
+        for(Vertice v : vizinhos){
+            for(Vertice w : vizinhos){
+                if(v.equals(w) == false){
+                    if(v.isVizinho(w) == false){
+                        return false;
+                    }
+                }
+            }
+
+            /*// Vizinhos dos vizinhos
+            vv = v.getVizinhos();
+            for(Vertice w : vv){
+                if(w.isVizinho(vertice) == false){
+                    return false;
+                }
+            }*/
+            
+        }
+
+        return true;
+    }
+
+    static boolean testaVerticesSimpliciais(Grafo grafo, ArrayList<Vertice> lista){
+        // Tomamos a ordem reversa da lista
+        Collections.reverse(lista);
+
+        for(Vertice v : lista){
+            
+            if (induzClique(v) == false){
+                grafo.removeVertice(v);
+                return false;
+            } 
+
+            grafo.removeVertice(v);
+        }   
+
+        return true;
+
+
+    }
+
+    static boolean isCordal(Grafo grafo){
+        ArrayList<Vertice> lista = lexBFS(grafo);
+        return testaVerticesSimpliciais(grafo, lista);
     }
     
 }

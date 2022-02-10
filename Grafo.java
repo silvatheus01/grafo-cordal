@@ -1,6 +1,8 @@
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 
 public class Grafo {
     private HashSet<Vertice> vertices;
@@ -29,7 +31,6 @@ public class Grafo {
     }
 
 
-
     @Override
     public String toString(){
         String out = "";
@@ -55,8 +56,24 @@ public class Grafo {
     }
 
     public void removeVertice(Vertice vertice){
-        
-    }
+        // Remove o vertice do conjunto
+        this.vertices.remove(vertice);
+        HashSet<Vertice> vizinhos;
+        // Remove vertice dos vizinhos de todos os vertices do conjunto
 
+        for(Vertice v : this.vertices){
+            vizinhos = v.getVizinhos();
+            // Testa se v possui vizinhos
+            if(vizinhos.isEmpty() == false){
+                Iterator<Vertice> iter = vizinhos.iterator();
+                while(iter.hasNext()){
+                    if(iter.next().equals(vertice)){
+                        iter.remove();
+                    }
+                }
+                
+            }   
+        }
+    }
 
 }

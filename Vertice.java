@@ -20,8 +20,20 @@ public class Vertice {
         this.vizinhos.add(vertice);
     }
 
+    public boolean isVizinho(Vertice vertice){
+        return this.vizinhos.contains(vertice);
+    }
+
     public HashSet<Vertice> getVizinhos(){
         return this.vizinhos;
+    }
+
+    public int getNumeroVizinhos(){
+        return this.vizinhos.size();
+    }
+
+    public void removeVizinho(Vertice vertice){
+        this.vizinhos.remove(vertice);
     }
 
     /*public void marcaVertice(){

@@ -14,13 +14,14 @@ public class AlgGrafos{
         String path = "./myfiles/grafo.txt";
         Grafo grafo = new Grafo(path);
 
-        if(isCordal(grafo)){
+        int resultado = isCordal(grafo);
+        if(resultado == -1){
             System.out.println("O grafo é cordal.");
         }else{
-            System.out.println("O grafo não é cordal.");
-        }
-        
-       
+            System.out.println("O grafo não é cordal pois o vértice "
+             + resultado + " não é simplicial no possível EEP.\nSubgrafo restante:\n" 
+             + grafo.toString());                      
+        } 
     }
     
     // Computa a Busca em Largura Lexicográfica (LexBFS)
@@ -142,8 +143,8 @@ public class AlgGrafos{
         return true;
     }
 
-    // Checa se todos os vértices no EEP são simpliciais 
-    static boolean checaVerticesSimpliciais(Grafo grafo, ArrayList<Vertice> lista){
+    // Checa se todos os vértices no possível EEP são simpliciais 
+    static int checaVerticesSimpliciais(Grafo grafo, ArrayList<Vertice> lista){
         // Tomamos a ordem reversa da lista, ou seja, o possível EEP
         Collections.reverse(lista);
 
@@ -151,19 +152,22 @@ public class AlgGrafos{
             if (induzClique(v) == false){
                 // Vertice removida para printar subgrafo
                 grafo.removeVertice(v);
-                return false;
+                // Se o grafo não é cordal, retornamos o vértice que não é simplicial.
+                return v.getId();
             } 
 
             // Removemos o vértice posteriormente para checagem ocorra corretamente
             grafo.removeVertice(v);
         }   
-
-        return true;
+        
+        // Retorna -1 se o grafo é cordal
+        return -1;
 
     }
 
-    // Checa se o grafo é cordal
-    static boolean isCordal(Grafo grafo) throws GrafoInvalidoException{
+    /* Checa se o grafo é cordal. Se for, retornamos -1.
+    Senão, retornamos o id do vértice que não é simplicial.*/
+    static int isCordal(Grafo grafo) throws GrafoInvalidoException{
         ArrayList<Vertice> lista = lexBFS(grafo);
         return checaVerticesSimpliciais(grafo, lista);
     }

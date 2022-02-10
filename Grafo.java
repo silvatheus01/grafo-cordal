@@ -1,8 +1,6 @@
 import java.util.HashSet;
-import java.util.HashMap;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -67,6 +65,8 @@ public class Grafo {
             }            
         }
 
+        sc.close();
+
         HashSet<Vertice> vertices = this.vertices;
 
         // Testa se o grafo é direcionado
@@ -122,9 +122,7 @@ public class Grafo {
             return out.substring(0,out.length()-1);
         }else{
             return "Grafo vazio";
-        }   
-
-        
+        }           
     }
 
     
@@ -132,7 +130,6 @@ public class Grafo {
     public boolean contemVertice(Vertice vertice){
         if(this.vertices.contains(vertice)) return true;
         else return false;
-
     }
 
     public void removeVertice(Vertice vertice){
@@ -154,8 +151,7 @@ public class Grafo {
                     if(iter.next().equals(vertice)){
                         iter.remove();
                     }
-                }
-                
+                }                
             }   
         }
     }

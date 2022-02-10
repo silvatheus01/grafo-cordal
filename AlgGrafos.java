@@ -130,7 +130,7 @@ public class AlgGrafos{
         checamos se eles são vizinhos entre si, ou seja, existe um clique */
         for(Vertice v : vizinhos){
             for(Vertice w : vizinhos){
-                // Um vértice não pode ser vizinho de si mesmo
+                // Tomamos que um vértice não pode ser vizinho de si mesmo
                 if(v.equals(w) == false){
                     // Se não é vizinho, já retornamos como falso
                     if(v.isVizinho(w) == false){
@@ -150,8 +150,6 @@ public class AlgGrafos{
 
         for(Vertice v : lista){
             if (induzClique(v) == false){
-                // Vertice removida para printar subgrafo
-                grafo.removeVertice(v);
                 // Se o grafo não é cordal, retornamos o vértice que não é simplicial.
                 return v.getId();
             } 

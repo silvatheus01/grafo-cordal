@@ -38,7 +38,20 @@ public class Grafo {
 
             // Vertice que terá seus vizinhos neste momento
             // Seu id é o número no começo da linha
-            Vertice v = new Vertice(Integer.parseInt(lista.get(0)));
+            Vertice v;
+
+            // O ID de um vértice precisa ser um número inteiro
+            try {
+                v = new Vertice(Integer.parseInt(lista.get(0)));
+            } catch (NumberFormatException e) {
+                throw new GrafoInvalidoException("O ID de um vértice precisa ser um número.");
+            }
+
+            // O ID de um vértice precisa ser um número inteiro maior do que 0
+            if(v.getId() <= 0){
+                throw new GrafoInvalidoException("O ID de um vértice precisa ser um número maior do que 0.");
+            }
+            
             // Remove o id do vértice atual que terá seus vizinhos computados
             lista.remove(0);
 
@@ -52,7 +65,20 @@ public class Grafo {
             
             // Para cada vizinho na lista
             for (String str : lista){
-                Vertice w = new Vertice(Integer.parseInt(str));
+                Vertice w;
+
+                // O ID de um vértice precisa ser um número inteiro
+                try {
+                    w = new Vertice(Integer.parseInt(str));
+                } catch (NumberFormatException e) {
+                    throw new GrafoInvalidoException("O ID de um vértice precisa ser um número.");
+                }
+    
+                // O ID de um vértice precisa ser um número inteiro maior do que 0
+                if(w.getId() <= 0){
+                    throw new GrafoInvalidoException("O ID de um vértice precisa ser um número maior do que 0.");
+                }
+
                 // Checa se o vertice já existe no grafo
                 if(this.contemVertice(w)){
                     // Se existir, trabalhamos com a instância que já existe.
